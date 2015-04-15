@@ -6,15 +6,39 @@
 //  Copyright (c) 2015 jeff. All rights reserved.
 //
 
+#include <iostream>
 #include <fstream>
+
+#include <boost/filesystem.hpp>
+#include <opencv2/features2d/features2d.hpp>
 
 #include "functions.h"
 
-#include <opencv2/features2d/features2d.hpp>
 
+namespace fs = ::boost::filesystem;     // Shorthand for boost filesystem namespace.
 using namespace std;
 using namespace cv;
 
+/* Read all jpgs in a given directory */
+
+void getAllJPG(fs::path& path, vector<fs::path>& files){
+    
+    if (!fs::exists(path) || !fs::is_directory(path)){
+        cout << "Path is not a valid directory.";
+        return;
+    }
+    
+    fs::recursive_directory_iterator it(path);  // Iterator for this directory.
+    fs::recursive_directory_iterator endit;     // Indicating the end of directory.
+    
+    while (it != endit){
+        if (fs::is_regular_file(*it) && it->path().extension() == ".jpg"){
+            files.push_back(it->path().filename());
+            ++it;
+        }
+    }
+    
+};
 
 /* Write keypoints to file in SIFT format. */
 void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName){

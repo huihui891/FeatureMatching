@@ -9,67 +9,66 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/filesystem.hpp>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/gpu/gpu.hpp>
+#include <opencv2/flann/flann.hpp>
 
 #include "functions.h"
 
+#include "ImageFrame.h"
+
+namespace fs = ::boost::filesystem;
 using namespace std;
 using namespace cv;
 
 int main(int argc, const char * argv[]) {
+   
+    /* Read all files in the images directory. */
     
-    /* Initialise resources. */
+    vector<fs::path> files;                 // Vector containing path to all images to be matched.
+    vector<ImageFrame> images;              // Class containing all images with their descriptors and keypoints.
     
-    std::vector<KeyPoint> kp1, kp2;       // Vector of key points.
-    cv::Mat des1, des2;
+    fs::path imageFolder ("images/");
     
+    getAllJPG(imageFolder, files);
     
-    Mat img1, img2;
-    string img1Name, img2Name;
+    cout << "Number of Images: " << files.size() << endl;
     
-    img1Name = "IMGP9267";
-    img2Name = "IMGP9268";
+    /* Build the image structures. */
+    
+    for (int i = 0; i < files.size(); i++) {
+        
+        ImageFrame im(files[i]);
+        images.push_back(im);
+    }
+    
+    cout << "Images are now prepared for matching" << endl;
 
-    /* Load images as greyscale. */
-    
-    img1 = imread("images/IMGP9267.jpg", CV_LOAD_IMAGE_GRAYSCALE); // Read in grayscale.
-    img2 = imread("images/IMGP9268.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-    
-    /* Find keypoints for all images. */
-
-    ORB orb = ORB(3000);
-    
-    orb.detect(img1, kp1);
-    orb.detect(img1, kp2);
-    
-    /* Calculate ORB descriptors for all key points. */
-    
-    orb.compute(img1, kp1, des1);
-    orb.compute(img2, kp2, des2);
-    
     /* Match the key points. */
     
-    BFMatcher matcher(NORM_HAMMING, true);
+    FlannBasedMatcher flannMatcher;
     
-    vector<vector<DMatch>> matches;                 // k sets of matches, so [k][2] elements.
-                                                    // [k][1] matches to [k][2].
-    matcher.knnMatch(des1, des2, matches, 1);       // Find the TWO best matches.
+    vector<DMatch> matches;
     
-    // Filter to matches that ar
-    
+    flannMatcher.match(images[0].getDescriptor(), images[1].getDescriptor(), matches);
+
     /* Print keypoints to file in SIFT format. */
     
-    writeKeyPointsToFile(&kp1, img1Name);
-    writeKeyPointsToFile(&kp2, img2Name);
+    vector<KeyPoint> kp1 = images[0].getKeyPoints();
+    vector<KeyPoint> kp2 = images[1].getKeyPoints();
+    
+    writeKeyPointsToFile(&kp1, images[0].getFileStem());
+    writeKeyPointsToFile(&kp2, images[1].getFileStem());
     
     /* Draw and print keypoints to be displayed (only for debugging). */
     
     Mat imageMatches;
     
-    drawMatches(img1, kp1, img2, kp2, matches, imageMatches);
+    drawMatches(images[0].getImgGray(), images[0].getKeyPoints(),
+                images[1].getImgGray(), images[1].getKeyPoints(), matches, imageMatches);
     
     namedWindow("image");
     
