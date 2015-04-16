@@ -47,21 +47,35 @@ int main(int argc, const char * argv[]) {
     
     cout << "Images are now prepared for matching" << endl;
 
+    /* Print keypoints to file in SIFT format. */
+    
+    for(int i = 0; i < images.size(); i++){
+        vector<KeyPoint> kp = images[i].getKeyPoints();
+        writeKeyPointsToFile(&kp, images[i].getFileStem());
+    }
+    
     /* Match the key points. */
     
     FlannBasedMatcher flannMatcher;
     
     vector<DMatch> matches;
-    
-    flannMatcher.match(images[0].getDescriptor(), images[1].getDescriptor(), matches);
 
-    /* Print keypoints to file in SIFT format. */
+    flannMatcher.match(images[0].getDescriptor(), images[1].getDescriptor(), matches);
     
-    vector<KeyPoint> kp1 = images[0].getKeyPoints();
-    vector<KeyPoint> kp2 = images[1].getKeyPoints();
+    /* Print the matches file. */
     
-    writeKeyPointsToFile(&kp1, images[0].getFileStem());
-    writeKeyPointsToFile(&kp2, images[1].getFileStem());
+    cout << "Preparing match file..." << endl;
+    
+    for (int i = 0; i < images.size(); i++){
+        for (int j = (i + 1); j < images.size(); j++){
+            
+            vector<DMatch> matches;
+            flannMatcher.match(images[i].getDescriptor(), images[j].getDescriptor(), matches);
+            
+            writeMatchesToFile(&images, &matches, i, j);
+            
+        }
+    }
     
     /* Draw and print keypoints to be displayed (only for debugging). */
     

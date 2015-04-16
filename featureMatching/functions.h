@@ -11,8 +11,11 @@
 
 #include <stdio.h>
 #include <vector>
-#include <opencv2/features2d/features2d.hpp>
 #include <string>
+
+#include <opencv2/features2d/features2d.hpp>
+
+#include "ImageFrame.h"
 
 namespace fs = ::boost::filesystem;
 using namespace std;
@@ -20,5 +23,6 @@ using namespace cv;
 
 void getAllJPG(fs::path& path, vector<fs::path>& files);
 void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName);
+void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int idx1, int idx2);
 
 #endif /* defined(__featureMatching__functions__) */
