@@ -23,7 +23,7 @@ ImageFrame::ImageFrame(fs::path imagePath){
     fileName = imagePath.filename().string();
     fileStem = imagePath.stem().string();
     
-    imgGray = imread("images/"+fileName);
+    imgGray = imread("inputFiles/images/"+fileName);
     
     ORB orb = ORB(2000);                            // ORB class for keypoint finding and matching.
     

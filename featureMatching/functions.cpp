@@ -48,7 +48,7 @@ void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName){
     
     ofstream outputFile;
     
-    outputFile.open("siftfiles/"+imageName+".sift");
+    outputFile.open("outputFiles/features/"+imageName+".sift");
     
     long numKeyPoints = inputPoints->size();
     
@@ -90,7 +90,7 @@ void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName){
 void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int idx1, int idx2){
     
     ofstream outputFile;
-    outputFile.open("matches.txt", ofstream::out | ofstream::app);      // Open file in append mode if it exists.
+    outputFile.open("outputFiles/matches.txt", ofstream::out | ofstream::app);      // Open file in append mode if it exists.
     
     /* Printing the two images matched and no. matches. */
     outputFile << images->at(idx1).getFileName() << " " << images->at(idx2).getFileName()
