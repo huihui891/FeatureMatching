@@ -128,7 +128,7 @@ void writeDescriptorsToFile(vector<ImageFrame>* images){
     
     /* Print number of images/descriptors in the file. */
     
-    int numDescriptors = images->size();
+    long numDescriptors = images->size();
     
     outputFile << numDescriptors << endl << endl;
     
