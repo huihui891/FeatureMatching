@@ -61,7 +61,7 @@ int main(int argc, const char * argv[]) {
     
     vector<DMatch> matches;
 
-    flannMatcher.match(images[0].getDescriptor(), images[1].getDescriptor(), matches);
+    flannMatcher.match(images[0].getDescriptors(), images[1].getDescriptors(), matches);
     
     /* Print the matches file. */
     
@@ -71,7 +71,7 @@ int main(int argc, const char * argv[]) {
         for (int j = (i + 1); j < images.size(); j++){
             
             vector<DMatch> matches;
-            flannMatcher.match(images[i].getDescriptor(), images[j].getDescriptor(), matches);
+            flannMatcher.match(images[i].getDescriptors(), images[j].getDescriptors(), matches);
             
             writeMatchesToFile(&images, &matches, i, j);
             
@@ -79,19 +79,24 @@ int main(int argc, const char * argv[]) {
     }
 
     cout << "Done!" << endl;
+
+    /* Print out descriptors of all keypoints in each image - will be used to form database after SFM. */
     
-//    /* Draw and print keypoints to be displayed (only for debugging). */
-//    
-//    Mat imageMatches;
-//    
-//    drawMatches(images[0].getImgGray(), images[0].getKeyPoints(),
-//                images[1].getImgGray(), images[1].getKeyPoints(), matches, imageMatches);
-//    
-//    namedWindow("image");
-//    
-//    imshow("image", imageMatches);
-//    
-//    waitKey(0);
+    writeDescriptorsToFile(&images);
+    
+    
+    /* Draw and print keypoints to be displayed (only for debugging). */
+    
+    Mat imageMatches;
+    
+    drawMatches(images[0].getImgGray(), images[0].getKeyPoints(),
+                images[1].getImgGray(), images[1].getKeyPoints(), matches, imageMatches);
+    
+    namedWindow("image");
+    
+    imshow("image", imageMatches);
+    
+    waitKey(0);
     
     return 0;
     

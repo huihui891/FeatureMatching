@@ -24,5 +24,6 @@ using namespace cv;
 void getAllJPG(fs::path& path, vector<fs::path>& files);
 void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName);
 void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int idx1, int idx2);
+void writeDescriptorsToFile(vector<ImageFrame>* images);
 
 #endif /* defined(__featureMatching__functions__) */

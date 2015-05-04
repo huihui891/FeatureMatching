@@ -85,7 +85,7 @@ void writeKeyPointsToFile(vector<KeyPoint>* inputPoints, string imageName){
     
 }
 
-/* Write single .txt file containing matches between all keypoints in all images. */
+/* Write .txt file containing matches between all keypoints in all images to use in vsfm. */
 
 void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int idx1, int idx2){
     
@@ -109,4 +109,58 @@ void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int
         outputFile << matches->at(i).trainIdx << " ";
     }
     outputFile << endl;
+    
+}
+
+/* Print all descriptors to file to use in the live camera pose estimation. */
+
+/*
+ - Create new file to store the information (descriptors.txt)
+ - Print the name of the image followed by descriptor matrix.
+ */
+
+
+void writeDescriptorsToFile(vector<ImageFrame>* images){
+    
+    ofstream outputFile;
+    
+    outputFile.open("outputFiles/descriptors.txt", ofstream::out);  // Opens file (overwrites if file exists).
+    
+    /* Print number of images/descriptors in the file. */
+    
+    int numDescriptors = images->size();
+    
+    outputFile << numDescriptors << endl << endl;
+    
+    /* Write the file name + descriptor matrix for each image individually. */
+    
+    for (int i=0; i < images->size(); i++) {
+        
+        Mat des = images->at(i).getDescriptors();
+        string fileName = images->at(i).getFileName();
+        int numRows = des.rows;
+        int numCols = des.cols;
+        
+        outputFile << fileName << " " << numRows << " " << numCols << endl;  // Name of file.
+        
+        /* Print out descriptors, each row is a descriptor */
+        
+        for (int i=0; i < numRows; i++) {
+            
+            for (int j=0; j < numCols; j++) {
+
+                outputFile << des.at<float>(i, j) << " ";
+                
+            }
+            
+            outputFile << endl;
+            
+        }
+        
+        outputFile << endl;
+        
+        //outputFile << images->at(i).getDescriptors() << endl << endl;
+        
+    }
+    
 }

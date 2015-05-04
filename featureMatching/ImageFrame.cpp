@@ -44,7 +44,7 @@ string              ImageFrame::getFileStem(){
 Mat                 ImageFrame::getImgGray(){
     return imgGray;
 }
-Mat                 ImageFrame::getDescriptor(){
+Mat                 ImageFrame::getDescriptors(){
     return descriptors;
 }
 vector<KeyPoint>    ImageFrame::getKeyPoints(){

@@ -41,7 +41,7 @@ public:
     string              getFileName();
     string              getFileStem();
     Mat                 getImgGray();
-    Mat                 getDescriptor();
+    Mat                 getDescriptors();
     vector<KeyPoint>    getKeyPoints();
     
 };
