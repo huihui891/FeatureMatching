@@ -29,6 +29,7 @@ private:
     string fileName;
     string fileStem;
     
+    Mat img;
     Mat imgGray;
     
     vector<KeyPoint> keypoints;

@@ -23,9 +23,9 @@ ImageFrame::ImageFrame(fs::path imagePath){
     fileName = imagePath.filename().string();
     fileStem = imagePath.stem().string();
     
-    imgGray = imread("inputFiles/images/"+fileName);
+    imgGray = imread("inputFiles/images/"+fileName, CV_LOAD_IMAGE_GRAYSCALE);
     
-    ORB orb = ORB(2000);                            // ORB class for keypoint finding and matching.
+    ORB orb = ORB(3000);                            // ORB class for keypoint finding and matching.
     
     orb.detect(imgGray, keypoints);                 // Get key points in image.
     orb.compute(imgGray, keypoints, descriptors);   // Get ORB descriptors.
