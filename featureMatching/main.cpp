@@ -57,49 +57,70 @@ int main(int argc, const char * argv[]) {
     
     /* Match the key points. */
     
-    FlannBasedMatcher flannMatcher;
-    BFMatcher bMatcher;
+    BFMatcher bMatcher(NORM_HAMMING, true);
     
-    vector<DMatch> matches;
-
-    //bMatcher.match(images[0].getDescriptors(), images[1].getDescriptors(), matches);
+    vector<vector<DMatch>> goodMatches;
+    int numPairs = 0;
     
-    /* Print the matches file. */
+    /* Match images then print the matches file with ONLY good matches. */
     
     cout << "Preparing match file." << endl;
     
-    for (int i = 0; i < images.size(); i++){
+    for (int i = 0; i < images.size()-1; i++){
         for (int j = (i + 1); j < images.size(); j++){
+
+            vector<DMatch> matches;                         // Has initial match results
             
-            vector<DMatch> matches;
             bMatcher.match(images[i].getDescriptors(), images[j].getDescriptors(), matches);
             
-            writeMatchesToFile(&images, &matches, i, j);
+            /* Filter out poor matches. */
+            
+            vector<DMatch> goodMatchesTemp;                 // Gets good matches for the current pair of images.
+            
+            for (int k=0; k<matches.size(); k++) {
+                
+                if (matches.at(k).distance < 35) {
+                    
+                    goodMatchesTemp.push_back(matches.at(k));
+                    
+                }
+                
+            }
+            
+            goodMatches.push_back(goodMatchesTemp);         // Saves to vector with matches between all pairs.
+            
+            printf("Matched image %i & %i; %lu good matches.\n", i, j, goodMatches.at(numPairs).size());
+            
+            writeMatchesToFile(&images, &(goodMatches.at(numPairs)), i, j);
+            
+            numPairs++;                                     // Keep track of how many matches have been made.
             
         }
     }
 
-    cout << "Writing descriptors to file." << endl;
-
-    /* Print out descriptors of all keypoints in each image - will be used to form database after SFM. */
-    
-    writeDescriptorsToFile(&images);
+//    cout << "Writing descriptors to file." << endl;
+//
+//    /* Print out descriptors of all keypoints in each image - will be used to form database after SFM. */
+//    
+//    writeDescriptorsToFile(&images);
     
     cout << "Done!" << endl;
     
+    cout << "Preparing to display first match:" << endl;
     
-//    /* Draw and print keypoints to be displayed (only for debugging). */
-//    
-//    Mat imageMatches;
-//    
-//    drawMatches(images[0].getImgGray(), images[0].getKeyPoints(),
-//                images[1].getImgGray(), images[1].getKeyPoints(), matches, imageMatches);
-//    
-//    namedWindow("image");
-//    
-//    imshow("image", imageMatches);
-//    
-//    waitKey(0);
+    /* Draw and print keypoints to be displayed (only for debugging). */
+    
+    Mat imageMatches;
+    vector<DMatch> matches = goodMatches.at(0);
+    
+    drawMatches(images[0].getImgGray(), images[0].getKeyPoints(),
+                images[1].getImgGray(), images[1].getKeyPoints(), matches, imageMatches);
+    
+    namedWindow("image");
+    
+    imshow("image", imageMatches);
+    
+    waitKey(0);
     
     return 0;
     

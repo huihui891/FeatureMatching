@@ -29,7 +29,6 @@ ImageFrame::ImageFrame(fs::path imagePath){
     
     orb.detect(imgGray, keypoints);                 // Get key points in image.
     orb.compute(imgGray, keypoints, descriptors);   // Get ORB descriptors.
-    descriptors.convertTo(descriptors, CV_32F);     // Need to convert to 32-bit for FLANN.
     
 }
 
