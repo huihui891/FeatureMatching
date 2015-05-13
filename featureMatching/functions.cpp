@@ -115,53 +115,27 @@ void writeMatchesToFile(vector<ImageFrame>* images, vector<DMatch>* matches, int
 }
 
 /* Print all descriptors to file to use in the live camera pose estimation. */
-
-/*
- - Create new file to store the information (descriptors.txt)
- - Print the name of the image followed by descriptor matrix.
- */
-
+// - Print new file for each image (to preserve floating precision).
 
 void writeDescriptorsToFile(vector<ImageFrame>* images){
     
-    ofstream outputFile;
-    
-    outputFile.open("outputFiles/descriptors.txt", ofstream::out);  // Opens file (overwrites if file exists).
-    
-    /* Print number of images/descriptors in the file. */
-    
-    long numDescriptors = images->size();
-    
-    outputFile << numDescriptors << endl << endl;
     
     /* Write the file name + descriptor matrix for each image individually. */
     
     for (int i=0; i < images->size(); i++) {
         
         Mat des = images->at(i).getDescriptors();
-        string fileName = images->at(i).getFileName();
-        int numRows = des.rows;
-        int numCols = des.cols;
+        string fileName = images->at(i).getFileStem();
         
-        outputFile << fileName << " " << numRows << " " << numCols << endl;  // Name of file.
+        /* Open a new file. */
         
-        /* Print out descriptors, each row is a descriptor */
+        cv::FileStorage file("outputFiles/descriptors/"+fileName+".yml", cv::FileStorage::WRITE);
         
-        for (int i=0; i < numRows; i++) {
-            
-            for (int j=0; j < numCols; j++) {
-
-                outputFile << des.at<float>(i, j) << " ";
-                
-            }
-            
-            outputFile << endl;
-            
-        }
+        /* Write descriptors to the file. */
         
-        outputFile << endl;
+        file << images->at(i).getFileStem() << des;
         
-        //outputFile << images->at(i).getDescriptors() << endl << endl;
+        file.release();
         
     }
     

@@ -98,11 +98,11 @@ int main(int argc, const char * argv[]) {
         }
     }
 
-//    cout << "Writing descriptors to file." << endl;
-//
-//    /* Print out descriptors of all keypoints in each image - will be used to form database after SFM. */
-//    
-//    writeDescriptorsToFile(&images);
+    cout << "Writing descriptors to file." << endl;
+
+    /* Print out descriptors of all keypoints in each image - will be used to form database after SFM. */
+    
+    writeDescriptorsToFile(&images);
     
     cout << "Done!" << endl;
     
