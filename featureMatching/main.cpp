@@ -79,7 +79,7 @@ int main(int argc, const char * argv[]) {
             
             for (int k=0; k<matches.size(); k++) {
                 
-                if (matches.at(k).distance < 35) {
+                if (matches.at(k).distance < 45) {
                     
                     goodMatchesTemp.push_back(matches.at(k));
                     
@@ -89,7 +89,7 @@ int main(int argc, const char * argv[]) {
             
             goodMatches.push_back(goodMatchesTemp);         // Saves to vector with matches between all pairs.
             
-            printf("Matched image %i & %i; %lu good matches.\n", i, j, goodMatches.at(numPairs).size());
+            //printf("Matched image %i & %i; %lu good matches.\n", i, j, goodMatches.at(numPairs).size());
             
             writeMatchesToFile(&images, &(goodMatches.at(numPairs)), i, j);
             

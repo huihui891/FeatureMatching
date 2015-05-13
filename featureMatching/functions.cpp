@@ -25,8 +25,8 @@ using namespace cv;
 void getAllJPG(fs::path& path, vector<fs::path>& files){
     
     if (!fs::exists(path) || !fs::is_directory(path)){
-        cout << "Path is not a valid directory.";
-        return;
+        cout << "Path is not a valid directory." << endl;
+        exit(0);
     }
     
     fs::recursive_directory_iterator it(path);  // Iterator for this directory.
@@ -36,6 +36,8 @@ void getAllJPG(fs::path& path, vector<fs::path>& files){
         if (fs::is_regular_file(*it)){
             if (it->path().extension() == ".jpg"){
                 files.push_back(it->path().filename());
+                ++it;
+            }else{
                 ++it;
             }
         }
