@@ -67,34 +67,42 @@ int main(int argc, const char * argv[]) {
     cout << "Preparing match file." << endl;
     
     for (int i = 0; i < images.size()-1; i++){
+        
+        // Print % done
+        printf("%f done.\n", (float)(i/(images.size()-1))*100);
+        
         for (int j = (i + 1); j < images.size(); j++){
 
             vector<DMatch> matches;                         // Has initial match results
             
-            bMatcher.match(images[i].getDescriptors(), images[j].getDescriptors(), matches);
-            
-            /* Filter out poor matches. */
-            
-            vector<DMatch> goodMatchesTemp;                 // Gets good matches for the current pair of images.
-            
-            for (int k=0; k<matches.size(); k++) {
+            // Only match if there are keypoints on both images.
+            if(images[i].getKeyPoints().size() > 0 && images[j].getKeyPoints().size()> 0){
                 
-                if (matches.at(k).distance < 45) {
+                bMatcher.match(images[i].getDescriptors(), images[j].getDescriptors(), matches);
+                
+                /* Filter out poor matches. */
+                
+                vector<DMatch> goodMatchesTemp;                 // Gets good matches for the current pair of images.
+                
+                for (int k=0; k<matches.size(); k++) {
                     
-                    goodMatchesTemp.push_back(matches.at(k));
+                    if (matches.at(k).distance < 35) {
+                        
+                        goodMatchesTemp.push_back(matches.at(k));
+                        
+                    }
                     
                 }
                 
+                goodMatches.push_back(goodMatchesTemp);         // Saves to vector with matches between all pairs.
+                
+                //printf("Matched image %i & %i; %lu good matches.\n", i, j, goodMatches.at(numPairs).size());
+                
+                writeMatchesToFile(&images, &(goodMatches.at(numPairs)), i, j);
+                
+                numPairs++;                                     // Keep track of how many matches have been made.
+                
             }
-            
-            goodMatches.push_back(goodMatchesTemp);         // Saves to vector with matches between all pairs.
-            
-            //printf("Matched image %i & %i; %lu good matches.\n", i, j, goodMatches.at(numPairs).size());
-            
-            writeMatchesToFile(&images, &(goodMatches.at(numPairs)), i, j);
-            
-            numPairs++;                                     // Keep track of how many matches have been made.
-            
         }
     }
 
