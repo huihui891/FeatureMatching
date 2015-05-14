@@ -51,6 +51,17 @@ int main(int argc, const char * argv[]) {
     /* Print keypoints to file in SIFT format. */
     
     for(int i = 0; i < images.size(); i++){
+        
+        // Print % done
+        float done = (float)i;
+        float outOf = (float)(images.size()-1);
+        
+        float pc = done/outOf * 100;
+        
+        printf("%.2f%% done\n", pc);
+        
+        /* Do the matching. */
+        
         vector<KeyPoint> kp = images[i].getKeyPoints();
         writeKeyPointsToFile(&kp, images[i].getFileStem());
     }
@@ -69,7 +80,12 @@ int main(int argc, const char * argv[]) {
     for (int i = 0; i < images.size()-1; i++){
         
         // Print % done
-        printf("%f done.\n", (float)(i/(images.size()-1))*100);
+        float done = (float)i;
+        float outOf = (float)(images.size()-1);
+        
+        float pc = done/outOf * 100;
+        
+        printf("%.2f%% done\n", pc);
         
         for (int j = (i + 1); j < images.size(); j++){
 
